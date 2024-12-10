@@ -1,2 +1,0 @@
-# WeatherNotif
-Automatic weather notifier
