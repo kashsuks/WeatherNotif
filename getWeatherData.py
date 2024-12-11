@@ -21,6 +21,11 @@ def getWeather(city):
   else:
     return "City not found or an error occurred."
 
+def writeLocation(location):
+    f = open("location.txt", "a")
+    f.write("location")
+    f.close()
+
 
 
 if __name__ == "__main__":
