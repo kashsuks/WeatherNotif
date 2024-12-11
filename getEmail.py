@@ -1,4 +1,4 @@
-import smtpilib #This is showing a not found error (TODO)
+import smtplib
 import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -12,14 +12,14 @@ def sendEmail():
     
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(sender_email, password)
+            server.login(senderEmail, password)
             print("Connection established successfully.")
-            return server, sender_email, receiver_email
+            return server, senderEmail, receiverEmail
     except Exception as e:
         print(f"An error occurred: {e}")
         return None, None, None
     
 if __name__ == "__main__":
-    server, sender_email, receiver_email = sendEmail()
+    server, senderEmail, receiverEmail = sendEmail()
     if server:
-        print(f"Ready to send email from {sender_email} to {receiver_email}")
+        print(f"Ready to send email from {senderEmail} to {receiverEmail}")
