@@ -1,3 +1,1 @@
-secure-smtplib
-email-to
-getpass4
+python-dotenv
