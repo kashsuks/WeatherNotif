@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import random
+from plyer import notification
 
 def getWeather(city):
     load_dotenv()
@@ -42,6 +43,7 @@ def getClothingRecommendation(temperature, location):
         return "Comfortable light clothing is best. Stay hydrated and cool."
 
 def main():
+    
     with open("location.txt", "r") as file:
         city = file.readline().strip()
 
@@ -53,7 +55,9 @@ def main():
 
     clothingAdvice = getClothingRecommendation(temperature, city)
 
-    print(f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}")
+    notificationMessage = f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}"
+    
+    notification.notify(title='Weather Update', message=f"{notificationMessage}",timeout=10,)
 
 if __name__ == "__main__":
     main()
