@@ -57,7 +57,9 @@ def main():
 
     notificationMessage = f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}"
     
-    notification.notify(title='Weather Update', message=f"{notificationMessage}",timeout=10,)
+    print(notificationMessage)
+    
+    # notification.notify(title='Weather Update', message=f"{notificationMessage}",timeout=10,)
 
 if __name__ == "__main__":
     main()
