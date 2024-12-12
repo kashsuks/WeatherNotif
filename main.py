@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import random
 
 def getWeather(city):
     load_dotenv()
@@ -20,28 +20,26 @@ def getWeather(city):
     else:
         return "City not found or an error occurred."
 
-def getClothingRecommendation(temperature, location, description):
-    tokenizer = AutoTokenizer.from_pretrained("gpt2")
-    model = AutoModelForCausalLM.from_pretrained("gpt2")
+def getClothingRecommendation(temperature, location):
+    temp = float(temperature)
     
-    prompt = f"I'm in {location} and it's {temperature}°C outside with {description} weather. Recommend what I should wear: "
+    cold_recommendations = [
+        "Layer up with a warm coat, thermal underwear, and waterproof boots.",
+        "Wear a heavy winter jacket, insulated gloves, and a warm hat.",
+        "Put on a thick coat, wool sweater, and waterproof outer layer.",
+        "Use thermal layers, a sturdy winter coat, and moisture-wicking clothing."
+    ]
     
-    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=50)
-    
-    outputs = model.generate(
-        inputs.input_ids, 
-        max_length=200, 
-        num_return_sequences=1, 
-        no_repeat_ngram_size=2,
-        do_sample=True,
-        top_k=50,
-        top_p=0.95,
-        temperature=0.7
-    )
-    
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    
-    return response.replace(prompt, '').strip()
+    if temp <= 0:
+        return random.choice(cold_recommendations)
+    elif 0 < temp <= 10:
+        return "Wear a warm jacket, long pants, and consider a scarf and gloves."
+    elif 10 < temp <= 15:
+        return "A light jacket or sweater will keep you comfortable. Layer if needed."
+    elif 15 < temp <= 20:
+        return "Light long-sleeve shirt or light jacket works well in this temperature."
+    else:
+        return "Comfortable light clothing is best. Stay hydrated and cool."
 
 def main():
     with open("location.txt", "r") as file:
@@ -53,7 +51,7 @@ def main():
         temperature = file.readline().strip()
         description = file.readline().strip()
 
-    clothingAdvice = getClothingRecommendation(temperature, city, description)
+    clothingAdvice = getClothingRecommendation(temperature, city)
 
     print(f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}")
 
