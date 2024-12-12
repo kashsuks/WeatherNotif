@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from transformers import pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def getWeather(city):
     load_dotenv()
@@ -21,11 +21,25 @@ def getWeather(city):
         return "City not found or an error occurred."
 
 def getClothingRecommendation(temperature, location, description):
-    generator = pipeline('text-generation', model='gpt2')
+    tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    model = AutoModelForCausalLM.from_pretrained("gpt2")
     
-    prompt = f"I'm in {location} and it's {temperature}°C outside with {description} weather. Recommend what I should wear:"
+    prompt = f"I'm in {location} and it's {temperature}°C outside with {description} weather. Recommend what I should wear: "
     
-    response = generator(prompt, max_length=200, num_return_sequences=1)[0]['generated_text']
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=50)
+    
+    outputs = model.generate(
+        inputs.input_ids, 
+        max_length=200, 
+        num_return_sequences=1, 
+        no_repeat_ngram_size=2,
+        do_sample=True,
+        top_k=50,
+        top_p=0.95,
+        temperature=0.7
+    )
+    
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     
     return response.replace(prompt, '').strip()
 
