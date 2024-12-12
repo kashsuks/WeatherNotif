@@ -2,7 +2,6 @@ import requests
 import os
 from dotenv import load_dotenv
 import random
-from plyer import notification
 
 def getWeather(city):
     load_dotenv()
@@ -58,8 +57,6 @@ def main():
     notificationMessage = f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}"
     
     print(notificationMessage)
-    
-    # notification.notify(title='Weather Update', message=f"{notificationMessage}",timeout=10,)
 
 if __name__ == "__main__":
     main()
