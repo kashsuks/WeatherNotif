@@ -20,17 +20,14 @@ def getWeather(city):
     else:
         return "City not found or an error occurred."
 
-def getClothingRecommendation(temperature, location):
-    qaPipeline = pipeline(
-        "conversational", 
-        model="facebook/blenderbot-400M-distill"
-    )
-
-    prompt = f"I'm in {location} and it's {temperature}°C outside with {description}. What should I wear to be comfortable and appropriate for the weather? Give me specific clothing recommendations."
-
-    response = qaPipeline(prompt)[0]['generated_text']
+def getClothingRecommendation(temperature, location, description):
+    generator = pipeline('text-generation', model='gpt2')
     
-    return response
+    prompt = f"I'm in {location} and it's {temperature}°C outside with {description} weather. Recommend what I should wear:"
+    
+    response = generator(prompt, max_length=200, num_return_sequences=1)[0]['generated_text']
+    
+    return response.replace(prompt, '').strip()
 
 def main():
     with open("location.txt", "r") as file:
@@ -42,7 +39,7 @@ def main():
         temperature = file.readline().strip()
         description = file.readline().strip()
 
-    clothingAdvice = getClothingRecommendation(temperature, city)
+    clothingAdvice = getClothingRecommendation(temperature, city, description)
 
     print(f"It is currently {temperature}°C in {city} with {description}\n\n{clothingAdvice}")
 
